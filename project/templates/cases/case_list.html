@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %} Кейсы {% endblock %}
+{% load global_context %}
+{% load static %}
+
+{% block content %}
+  {% if case_list %}
+    {% for case in case_list %}
+      <a href="{% url 'cases:case_view' case.Case_ID %}">{{case.Case_Name}}</a>  
+      <br>    
+    {% endfor%}
+  {% else %}
+    Кейсов нет
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %} {{case.Case_Name}} {% endblock %}
+{% load static %}
+
+{% block content %}
+
+  {% if case_list %}
+    {% for case in case_list %}
+      <a href="{% url 'cases:detail' case.id%}">{{case.Case_Name}}</a>
+    {% endfor%}
+  {% else %}
+    Кейсов нет
+  {% endif %}
+
+
+{% endblock %}
+

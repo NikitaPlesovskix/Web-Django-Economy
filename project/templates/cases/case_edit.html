@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %} {{case.Case_Name}} {% endblock %}
+{% load global_context %}
+{% load static %}
+
+{% block content %}
+
+<p class="font-weight-bold"> Название кейса: {{case.Case_Name}}</p>
+<p><b>Комментарий: </b>{{case.Case_Comment}}</p>
+<table>  
+  <thead> <!-- Вывод Периодов в заголовок -->
+    {% if period_column_in_case %} 
+      <col width="200"> <!-- Ширина первого столбца -->
+      <tr>
+        <th>Параметр\Период</th>
+        {% for period in period_column_in_case %}
+          <th class="column">{{period.Period_Name}}</th>
+        {% endfor %}
+      </tr>
+    {%endif%}
+  </thead>
+  <tbody>    
+    <form method="POST">      
+      {% csrf_token %}
+        {% if section_line_in_case %} 
+          {% for section in section_line_in_case %}             
+            <tr> <!-- Вывод Разделов как подзаголовков -->
+              <th class="column-1">
+                <!-- <a href=" url 'cases:section_view' case.Case_ID section.Section_ID %}"> -->
+                  {{section.Section_Name}}
+                <!-- </a>       -->
+              </th>
+            </tr>        
+            {% for parameter in section.parameter_set.all %}
+              <tr>
+                {% if parameter %}              
+                  <td> <!-- Вывод Параметров как строк -->
+                    {{parameter.Parameter_Name}}        
+                  </td>
+                    {%for data in parameter.data_set.all|sort:'period'%}
+                    <td class="column">
+                      {{data.Data_Value}}
+                    </td>
+                  {%endfor%}
+                {% endif %}
+              </tr> 
+            {% endfor %}               
+          {% endfor %}
+        {% endif %}
+      </form>
+    </tbody>   
+  
+</table>
+
+{% endblock %}
