@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %} {{section.Section_Name}} {% endblock %}
+{% load global_context %}
+{% load static %}
+
+{% block content %}
+<form method="POST">
+  {% csrf_token %}
+  <table>  
+    {% include 'cases/thead.html' %} <!-- Вывод заголовока -->
+    <tbody>
+      {% include 'cases/tbody_parameter_add.html' %} <!-- Вывод тела таблицы для редактирования параметра -->
+    </tbody>
+  </table>
+  <br>
+  <input type="button" class="btn btn-primary" onclick="history.back();" value="Отмена"/>
+  <input class="btn btn-outline-success" type="submit" value="Сохранить">
+</form>
+
+{% endblock %}

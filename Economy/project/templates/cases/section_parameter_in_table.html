@@ -1,0 +1,68 @@
+{% load global_context %}
+<!-- Модальное окно Зависимостей -->
+<div class="modal fade" id="Section_ParameterModal" tabindex="-1" aria-labelledby="Section_ParameterModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="Section_ParameterModalLabel">Изменить зависимости разделов и параметров</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть">X</button>
+      </div>
+      <div class="modal-body">
+        <table>
+          <thead>
+            <col width="200"> <!-- Ширина первого столбца -->
+            <tr>
+              <th>Параметр\Раздел</th>
+              {% for section in section_in_case|sort:'Section_Sort' %}      
+                {% if not section.Section_Name == "__default" %}
+                  <th class="column">{{section.Section_Name}}</th>
+                {% endif %}
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for parameter in parameter_in_case|sort:'Parameter_Sort' %}
+              <tr>           
+                <td> <!-- Вывод Параметров как строк -->
+                  {{parameter.Parameter_Name}}
+                </td>
+                {% for section in section_in_case|sort:'Section_Sort' %}
+                  {% if not section|is_default_section %}
+                    <td> <!-- Вывод чекбоксов -->
+                      <div class="btn-group-toggle" data-toggle="buttons">
+                        <label class= "btn btn-outline-success
+                        {% if section|parameter_in_section:parameter %} active {% endif %}">
+                          <input 
+                            type="checkbox" 
+                            autocomplete="off"
+                            name={{section.Section_ID}}_{{parameter.Parameter_ID}}
+                            value={{section.Section_ID}}_{{parameter.Parameter_ID}}
+                            {% if section|parameter_in_section:parameter %}
+                              checked
+                            {% endif %}
+                          >
+                          Связать
+                          {% comment %} {{section.Section_ID}}
+                          и
+                          {{parameter.Parameter_ID}} {% endcomment %}
+                        </label>
+                      </div>
+                    </td>
+                  {% endif %}
+                {% endfor %}
+              </tr> 
+            {% endfor %}
+          </tbody>     
+        </table>
+      </div>
+      <div class="modal-footer">
+        <input class="btn btn-outline-success" type="submit" name="save_section_parameter" value="ОК">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        {% comment %} <button type="button" class="btn btn-primary">Сохранить изменения</button> {% endcomment %}
+      </div>
+    </div>
+  </div>
+</div>
+
+  {% comment %} <a class="btn btn-outline-danger" href="{% url 'cases:case_edit' case.Case_ID %}">Назад</a> {% endcomment %}
+  {% comment %} <input class="btn btn-outline-success" type="submit" name="save_section_parameter" value="Сохранить"> {% endcomment %}

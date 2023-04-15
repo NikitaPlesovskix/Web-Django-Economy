@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %} {{section.Section_Name}} {% endblock %}
+{% load global_context %}
+{% load static %}
+
+{% block content %}
+
+<form method="POST" action="#">
+  {% csrf_token %}
+  <p class="font-weight-bold"> Название раздела:
+    <!-- {{form.Section_Name}} -->
+    <input
+      class="form-control" 
+      type="text"
+      name="Section_{{section.Section_ID}}"
+      value="{{section.Section_Name}}"
+    >
+  </p>
+  <table>  
+    {% include 'cases/tbody/thead.html' %} <!-- Вывод заголовока -->
+    <tbody>    
+      {% include 'cases/tbody/tbody_section_edit.html' %} <!-- Вывод тела таблицы для редактирования раздела -->
+      <tr>
+        <td>
+            <a class="btn btn-primary" href="{% url 'cases:parameter_add' case.Case_ID %}">
+              Добавить параметр
+            </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+
+  <input type="button" class="btn btn-primary" onclick="history.back();" value="Отмена"/>
+  <input class="btn btn-outline-success" type="submit" value="Сохранить">
+
+</form>
+{% endblock %}
+

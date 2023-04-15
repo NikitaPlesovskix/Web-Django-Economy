@@ -1,0 +1,27 @@
+{% load global_context %}
+<tr>
+  <td>
+    <!-- Вывод Параметров как строк -->
+    <input type = "text" 
+    name = Parameter_>
+  </td>
+  <td> 
+    <!-- Вывод названия переменных у Параметров -->
+    <input class="form-control"
+      type="text" 
+      name = Variable_>
+  </td>
+  <td> <!-- Вывод названия Формул у Параметров-->  
+    <input class="form-control"
+      type="text" 
+      name = Formula_>
+  </td> 
+  {% for period in case.period_set.all %}
+  <!-- Вывод Данных, если они соответствуют периоду, если пустые, выводим ""-->
+    <td>
+      <input class="form-control"
+        type="number"
+        name="Data_{{period.Period_ID}}"
+    </td>
+  {% endfor %}
+</tr> 

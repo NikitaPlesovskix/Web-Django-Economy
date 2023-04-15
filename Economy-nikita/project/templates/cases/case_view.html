@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %} {{case.Case_Name}} {% endblock %}
+{% load global_context %}
+{% load static %}
+
+{% block content %}
+
+<p class="font-weight-bold"> Название кейса: {{case.Case_Name}}</p>
+<p><b>Комментарий: </b>{{case.Case_Comment}}</p>
+<table>  
+  {% include 'cases/thead.html' %} <!-- Вывод заголовока -->
+  <tbody>
+    {% if section_line_in_case %} 
+      {% for section in section_line_in_case %}
+        {% if not section.Section_Name == "__default" %}   
+          <tr> <!-- Вывод Разделов как подзаголовков, кроме __default -->
+            <th class="column-1">
+              <a href="{% url 'cases:section_view' case.Case_ID section.Section_ID %}">
+                {{section.Section_Name}}
+              </a> 
+            </th>
+          </tr>
+        {% endif %}    
+        {% include 'cases/tbody_section_view.html' %} <!-- Вывод тела таблицы для просмотра раздела -->           
+      {% endfor %}
+    {% endif %} 
+  </tbody>     
+</table>
+<br>
+<form action="{% url 'cases:case_edit' case.Case_ID %}"><button class="btn btn-primary">Изменить</button></form>   
+<br>
+<input class="btn btn-primary" type="file" name="Image" id="id_Image">
+<br>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form }}
+  <input type="submit">
+</form>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %} {{case.Case_Name}} {% endblock %}
+{% load global_context %}
+{% load static %}
+
+{% block content %}
+<form method="POST">
+  {%csrf_token%}
+  <p class="font-weight-bold"> Название раздела:
+    <!-- {{form.Section_Name}} -->
+    <input
+      class="form-control" 
+      type="text"
+      name="Case_{{case.Case_ID}}"
+      value="{{case.Case_Name}}"
+    >
+  </p>
+  <p class="font-weight-bold">    
+    <b> 
+      Комментарий:
+    </b>
+    <!-- {{form.Section_Name}} -->
+    <input
+      class="form-control" 
+      type="text"
+      name="Case_Comment_{{case.Case_ID}}"
+      value="{{case.Case_Comment}}"
+    >
+  </p>
+  <table>  
+    {% include 'cases/thead_edit.html' %} <!-- Вывод заголовока -->    
+    <tbody>    
+      {% if case.section_set.all %} 
+        {% for section in case.section_set.all %}             
+          <tr> <!-- Вывод Разделов как подзаголовков -->
+            <th class="column-1">
+                {{section.Section_Name}}
+              <!-- Изменене раздела -->
+                <a class="btn btn-outline-success" href="{% url 'cases:section_edit' case.Case_ID section.Section_ID %}">              
+                  &#9997
+                </a>
+            </th>
+            <th class="column-1">
+            </th>
+          </tr>
+          {% include 'cases/tbody_section_edit.html' %} <!-- Вывод заголовока -->
+          <tr>
+            <td>
+              <input class="btn btn-primary" type="submit" name="parameter_add" value="Добавить параметр">
+            </td>
+          </tr>
+        {% endfor %}
+
+      {% endif %}
+      <tr>
+        <td>
+          <a class="btn btn-primary" href="{% url 'cases:section_add' case.Case_ID %}">
+            Добавить раздел
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <input class="btn btn-success" type="submit" name="save_case" value="Сохранить">
+</form>
+
+<!-- <button type="button" class="btn btn-success">Сохранить</button> -->
+{% endblock %}

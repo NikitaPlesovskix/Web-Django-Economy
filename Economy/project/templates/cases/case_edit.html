@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %} {{case.Case_Name}} {% endblock %}
+{% load global_context %}
+{% load static %}
+
+{% block content %}
+<form method="POST">
+  {%csrf_token%}
+  <div> <!-- Кнопки управления -->
+    <input class="btn btn-outline-success" type="submit" name="save_case" value="Сохранить">
+    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#BackModal">Назад</button>
+    <input class="btn btn-outline-primary" type="submit" name="section_add" value="Добавить раздел">
+    <input class="btn btn-outline-primary" type="submit" name="period_add" value="Добавить период">
+    {% comment %} 
+    <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" title="Заголовок всплывающего сообщения" data-bs-content="А вот и потрясающий контент. Это очень интересно. Правильно?">Нажмите, чтобы переключить всплывающее окно</button>
+    <a tabindex="0" class="btn btn-lg btn-danger" role="button" data-bs-toggle="popover" data-bs-trigger="focus" title="Отклоняемое всплывающее окно" data-bs-content="А вот и потрясающий контент. Это очень интересно. Правильно?">Отклоняемое всплывающее окно</a>
+     {% endcomment %}
+    {% comment %} <a class="btn btn-outline-info" href="{% url 'cases:section_parameter' case.Case_ID %}">Изменить зависимости разделов и параметров</a> {% endcomment %}
+  </div>
+  <p class="font-weight-bold"> Название кейса:
+    <input
+      class="form-control" 
+      type="text"
+      name="Case_{{case.Case_ID}}"
+      value="{{case.Case_Name}}">
+  </p>
+  <p class="font-weight-bold">
+    <b>
+      Комментарий:
+    </b>
+    <input
+      class="form-control" 
+      type="text"
+      name="Case_Comment_{{case.Case_ID}}"
+      value="{{case.Case_Comment}}">
+  </p>
+  <table>
+    {% include 'cases/tbody/thead_edit.html' %} <!-- Вывод заголовока -->    
+    <tbody>
+      {% if case.section_set.all %} 
+        {% for section in case.section_set.all|sort:'Section_Sort' %}
+          {% if not section|is_default_section %}
+            <tr> <!-- Вывод Разделов как подзаголовков, кроме __default -->
+              <th class="column-1">
+                  {% comment %} {{section.Section_Name}} {% endcomment %}
+                <!-- Изменене раздела -->
+                  {% comment %} <a class="btn btn-outline-success" href="{% url 'cases:section_edit' case.Case_ID section.Section_ID %}">              
+                    &#9997
+                  </a> {% endcomment %}
+                <input
+                  class="form-control"
+                  type="text"
+                  name="Section_{{section.Section_ID}}"
+                  value="{{section.Section_Name}}">
+              </th>
+              <th>
+                <input
+                  class="btn btn-primary" 
+                  type="submit" 
+                  name="parameter_add_in_{{section.Section_ID}}"
+                  value="Добавить параметр"
+                  {% comment %} {{section.Section_Name}} {% endcomment %}
+                  >
+              </th>
+            </tr>
+            {% include 'cases/tbody/tbody_section_edit.html' %} <!-- Вывод секций -->
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </tbody>
+  </table>
+<!-- Модальное окно Назад -->
+<div class="modal fade" id="BackModal" tabindex="-1" aria-labelledby="BackModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="BackModalLabel">Выйти из кейса '{{case.Case_Name}}' без сохранения?</h5>        
+      </div>
+      {% comment %} <div class="modal-body"></div> {% endcomment %}
+      <div class="modal-footer">
+        <a class="btn btn-outline-danger" href="{% url 'cases:case_view' case.Case_ID %}">Да</a>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" aria-label="Закрыть">Нет</button>
+        {% comment %} <input class="btn btn-outline-success" type="submit" name="save_case" value="Сохранить"> {% endcomment %}
+        <!-- Реализовать возможность выхода с сохранением -->
+        {% comment %} <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button> {% endcomment %}
+        {% comment %} <button type="button" class="btn btn-primary">Сохранить изменения</button> {% endcomment %}
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Модальное окно зависимости разделов и параметров -->
+{% include 'cases/section_parameter_in_table.html' %}
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"> ОК </button>
+    </div>
+  {% endfor %}
+{% endif %}
+</form>
+<!-- <button type="button" class="btn btn-success">Сохранить</button> -->
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %} {{caseparam.Param_Name}} {% endblock %}
+{% load static %}
+
+{% block content %}
+
+<h2>{{caseparam.Param_Name}}</h2>
+
+{% if dateparam_list_in_caseparam %}
+  {% for dateparam in dateparam_list_in_caseparam %}  
+    {{dateparam.Param_Period}}
+    {{dateparam.Param_Value}}
+    <hr>
+  {% endfor%}
+{% else %}
+    Параметров нет
+{% endif %}
+
+{% endblock %}

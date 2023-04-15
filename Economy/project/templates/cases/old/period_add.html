@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %} Создание нового периода {% endblock %}
+{% load global_context %}
+{% load static %}
+
+{% block content %}
+
+<form method="POST" action="#">
+  {% csrf_token %}
+  <p class="font-weight-bold"> Название периода:
+    <input
+      class="form-control" 
+      type="text"
+      name="Period_">
+  </p>
+  <br>
+
+  <input type="button" class="btn btn-primary" onclick="history.back();" value="Отмена"/>
+  <input class="btn btn-outline-success" type="submit" value="Сохранить">
+
+</form>
+{% endblock %}

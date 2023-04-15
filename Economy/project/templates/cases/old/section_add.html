@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %} Создание новой секции {% endblock %}
+{% load global_context %}
+{% load static %}
+
+{% block content %}
+
+<form method="POST" action="#">
+  {% csrf_token %}
+  <p class="font-weight-bold"> Название раздела:
+    <!-- {{form.Section_Name}} -->
+    <input
+      class="form-control" 
+      type="text"
+      name="Section_">
+  </p>
+  {% comment %} <table>  
+    {% include 'cases/tbody/thead.html' %} <!-- Вывод заголовока -->
+    <tbody>    
+      {% include 'cases/tbody/tbody_section_edit.html' %} <!-- Вывод тела таблицы для редактирования раздела -->
+      <tr>
+        <td>
+            <a class="btn btn-primary" href="{% url 'cases:parameter_add' case.Case_ID section.Section_ID %}">
+              Добавить параметр
+            </a>
+        </td>
+      </tr>
+    </tbody>
+  </table> {% endcomment %}
+  <br>
+
+  <input type="button" class="btn btn-primary" onclick="history.back();" value="Отмена"/>
+  <input class="btn btn-outline-success" type="submit" value="Сохранить">
+
+</form>
+{% endblock %}
+{% comment %} 
+<div class="container">
+  <h2> Формирование кейса </h2>  
+  <div class="row justify-content-md-cente border">
+      <div class="container">
+        <div class="row justify-content-md-center">
+          <div class="container-fluid">
+            <form method="POST">
+              {%csrf_token%}
+              <br>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="">Название кейса:</span>
+                </div>
+                <input 
+                class="form-control"  
+                type="text" 
+                name="Case_Name" 
+                maxlength="500" 
+                required=""
+                >
+              </div>
+              <br>
+              <div class="input-group">
+                <textarea 
+                  class="form-control"  
+                  name="Case_Comment" 
+                  maxlength="300" 
+                  required="" 
+                  id="id_Case_Comment"></textarea>
+              </div>
+              <br>
+              <button type="submit" class="btn btn-primary">Создать</button>
+              <input type="button" class="btn btn-primary" onclick="history.back();" value="Отмена"/>
+              <br>
+            </form>
+          </div>
+        </div>
+      </div>
+  </div>
+</div> {% endcomment %}

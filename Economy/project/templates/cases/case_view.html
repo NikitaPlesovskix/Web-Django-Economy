@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %} {{case.Case_Name}} {% endblock %}
+{% load global_context %}
+{% load static %}
+
+{% block content %}
+
+<p class="font-weight-bold"> Название кейса: {{case.Case_Name}}</p>
+<p><b>Комментарий: </b>{{case.Case_Comment}}</p>
+<table>  
+  {% include 'cases/tbody/thead.html' %} <!-- Вывод заголовока -->
+  <tbody>
+    {% if case.section_set.all %} 
+      {% for section in case.section_set.all|sort:'Section_Sort' %}
+        {% if not section|is_default_section %}
+          <tr> <!-- Вывод Разделов как подзаголовков, кроме __default -->
+            <th class="column-1">
+              {% comment %} <a href="{% url 'cases:section_view' case.Case_ID section.Section_ID %}"> {% endcomment %}
+                {{section.Section_Name}}
+              {% comment %} </a>  {% endcomment %}
+            </th>
+          </tr> 
+          {% include 'cases/tbody/tbody_section_view.html' %} <!-- Вывод тела таблицы для просмотра раздела --> 
+        {% endif %}             
+      {% endfor %}
+    {% endif %} 
+  </tbody>     
+</table>
+<br> 
+<a class="btn btn-outline-success" href="{% url 'cases:case_edit' case.Case_ID %}">Изменить</a> 
+{% endblock %}

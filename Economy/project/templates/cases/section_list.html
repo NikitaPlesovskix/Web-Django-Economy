@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %} Разделы {% endblock %}
+{% load static %}
+
+{% block content %}
+
+  {% if section_list %}
+    {% for section in section_list %}
+      <a href="{% url 'cases:section_view' section.id%}">{{section.Section_Name}}</a>
+    {% endfor%}
+  {% else %}
+    Разделов нет
+  {% endif %}
+
+{% endblock %}
+

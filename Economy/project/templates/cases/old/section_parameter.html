@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %} {{case.Case_Name}} {% endblock %}
+{% load global_context %}
+{% load static %}
+
+{% block content %}
+
+<form method="POST">
+  {%csrf_token%}
+  <table>
+    <thead>
+      <col width="200"> <!-- Ширина первого столбца -->
+      <tr>
+        <th>Параметр\Раздел</th>
+        {% for section in section_in_case|sort:'Section_Sort' %}      
+          {% if not section.Section_Name == "__default" %}
+            <th class="column">{{section.Section_Name}}</th>
+          {% endif %}
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for parameter in parameter_in_case|sort:'Parameter_Sort' %}
+        <tr>           
+          <td> <!-- Вывод Параметров как строк -->
+            {{parameter.Parameter_Name}}
+          </td>
+          {% for section in section_in_case|sort:'Section_Sort' %}
+            {% if not section|is_default_section %}
+              <td> <!-- Вывод чекбоксов -->
+                <div class="btn-group-toggle" data-toggle="buttons">
+                  <label class= "btn btn-outline-success
+                  {% if section|parameter_in_section:parameter %} active {% endif %}">
+                    <input 
+                      type="checkbox" 
+                      autocomplete="off"
+                      name={{section.Section_ID}}_{{parameter.Parameter_ID}}
+                      value={{section.Section_ID}}_{{parameter.Parameter_ID}}
+                      {% if section|parameter_in_section:parameter %}
+                        checked
+                      {% endif %}
+                    >
+                    Связать
+                    {% comment %} {{section.Section_ID}}
+                    и
+                    {{parameter.Parameter_ID}} {% endcomment %}
+                  </label>
+                </div>
+              </td>
+            {% endif %}
+          {% endfor %}
+        </tr> 
+      {% endfor %}
+    </tbody>     
+  </table>
+  <a class="btn btn-outline-danger" href="{% url 'cases:case_edit' case.Case_ID %}">Назад</a>
+  <input class="btn btn-outline-success" type="submit" name="save_section_parameter" value="Сохранить">
+</form>
+<br>
+{% endblock %}
+
+            {% comment %} {% for sections in section_in_case|sort:'Section_Sort' %}
+                <td> <!-- Вывод радиобатонов -->
+                    <label class="btn btn btn-outline-primary">
+                      <input 
+                      type="radio" 
+                      name="{{parameter.Parameter_ID}}"                       
+                      value="{{sections.Section_ID}}" 
+                      autocomplete="off" 
+                      {% if sections.Section_ID == section.Section_ID %}
+                        checked
+                      {% endif %}
+                      > 
+                    </label>
+                  {{sections.Section_ID}}
+                  и
+                  {{parameter.Parameter_ID}}  
+                </td>
+              {% endfor %} {% endcomment %}
+                  {% comment %} <button 
+                    type="button" 
+                    class="btn btn-success
+                    {% if not section|parameter_in_section:parameter %}
+                      active
+                    {% endif %}" 
+                    data-toggle="button" 
+                    {% if not section|parameter_in_section:parameter %}
+                      aria-pressed="true"
+                      autocomplete="on"
+                    {% else %}
+                      aria-pressed="false"                      
+                      autocomplete="off"
+                    {% endif %}
+                    name={{section.Section_ID}}_{{parameter.Parameter_ID}}>
+                      {{section.Section_ID}}
+                      и
+                      {{parameter.Parameter_ID}}
+                  </button> {% endcomment %}
+                  {% comment %} <input 
+                    type="radio"
+                    name={{section.Section_ID}}_{{parameter.Parameter_ID}}
+                    value={{section.Section_ID}}_{{parameter.Parameter_ID}}
+                    {% if section|parameter_in_section:parameter %} 
+                      checked
+                    {% endif %}
+                  > {% endcomment %}

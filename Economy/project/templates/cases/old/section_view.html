@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %} {{section.Section_Name}} {% endblock %}
+{% load global_context %}
+{% load static %}
+
+{% block content %}
+
+<p class="font-weight-bold"> Название раздела: {{section.Section_Name}}</p>
+<table>  
+{% include 'cases/tbody/thead.html' %} <!-- Вывод заголовока -->
+  <tbody>
+    {% include 'cases/tbody/tbody_section_view.html' %} <!-- Вывод тела таблицы для просмотра раздела -->
+  </tbody>     
+</table>
+<br>
+<a class="btn btn-primary" href="{% url 'cases:section_edit' case.Case_ID section.Section_ID %}">Изменить</a>
+{% endblock %}

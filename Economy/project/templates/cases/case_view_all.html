@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+
+{% block title %} Кейсы {% endblock %}
+{%load global_context%}
+{% load static %}
+
+{% block content %}
+
+<div class="container" id="Analitical"  {%if not request.user|has_group:"Преподаватель" %} style="display: none;" {%endif%}>
+  <div class="row">
+    <div class="col-md-7">
+      <div class="col-md-100" style="min-height:650px;">
+    <table class="table table-striped">
+      <!-- <thead class="thead-light">
+        <th>Мои кейcы</th>
+        <th></th>
+        <th></th>
+        {%if request.user|has_group:"Преподаватель" %}
+        <th></th>
+        {%endif%}
+        {%if not request.user|has_group:"Преподаватель" %}
+        <th><button class="btn btn-success" id="back" onclick="exit()" > Назад </button></th>
+        {%endif%}
+      </thead> -->
+      <thead>
+        <tr>
+          <th>
+            Название
+          </th>
+          <th>
+            Коментарий
+          </th>
+          <th>
+            
+          </th>
+          <!-- {%if request.user|has_group:"Преподаватель" %}
+          <th>
+            
+          </th>
+          {%endif%} -->
+        </tr>
+      </thead>
+          <form method="POST" onsubmit="return confirm('Вы уверены в своем действии?');">
+            {%csrf_token%}
+      <tbody>
+
+        {%for item in user.job_set.all%}
+        <!-- {%if request.user|has_group:"Преподаватель" and item.User == request.user or not item.Job_Param.Case.Is_Pattern%} -->
+        <tr>
+        <td>
+          {{item.Job_Param.Param_Name}}
+        </td>
+        <td>
+          {{item.Job_Param.Param_Help}}
+        </td>
+        <td>
+          <a href="{% url 'cases:detail' item.Job_Param.Case.id %}" class="top-menu">Просмотр<span class=" glyphicon glyphicon-pencil "></span></a>
+        </td>
+          <!-- {%if request.user|has_group:"Преподаватель" %} -->
+            <td>
+              <a href="{% url 'cases:edit' item.Job_Param.Case.id %}" class="top-menu">Редактирование</span></a>
+            </td>
+          <!-- {%endif%} -->
+          <td>
+          <!-- {%if not request.user|has_group:"Преподаватель" %} -->
+            <!-- {%if item.Job_Param.Case.Is_Analitical%} -->
+               <button type="submit" class="btn btn-danger" name ="{{item.Job_Param.Case.id}}"> X </button>
+            <!-- {%endif%} -->
+          <!-- {%endif%} -->
+            </td>
+        </tr>
+        <!-- {%endif%} -->
+        {%endfor%}
+      </tbody>
+    </form>
+        </table>
+      </div>
+    </div>
+    <div class="col-md-5 ">
+      <div class="col-md-15">  
+        <!-- {%if not request.user|has_group:"Преподаватель"%} -->
+          <h3>
+            Создать новую работу
+          </h3>
+        <!-- {%else%} -->
+          <h3>
+            Создать шаблон по существующему
+          </h3>
+        <!-- {%endif%} -->
+          <!-- {%if request.user|has_group:"Преподаватель"%} -->
+            <form method="POST" onsubmit="return confirm('Вы уверены в своем действии?');">
+              {%csrf_token%}
+              <div class="input-group mb-3">
+              
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">Выбрать шаблон:</span>
+                </div>
+                 <select name = "case" required="" class="custom-select my-0 mr-sm-0">
+                  <optgroup data-name="district" label="Шаблоны преподавателей">
+                    {%for job in Job_list%}
+                      <!-- {%if job.Job_Param.Case.Is_Pattern and job.Job_Param.Case.Is_Ready%} -->
+                        <option  value="{{job.Job_Param.Case.id}}" >
+                          {{job.Job_Param.Case.Case_Name}}
+                        </option>
+                      <!-- {%endif%} -->
+                    {%endfor%}
+                  </optgroup>
+                    <optgroup data-name="district" label="Шаблоны для преподавателей">
+                      {%for job in Job_list%}
+                      <!-- {%if job.Job_Param.Case.Is_Pattern_For_Teacher%} -->
+                        <option  value="{{job.Job_Param.Case.id}}" >
+                          {{job.Job_Param.Case.Case_Name}}
+                        </option>
+                      <!-- {%endif%} -->
+                    {%endfor%}
+                    </optgroup>
+                    
+                  </select>
+              </div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">Название работы:</span>
+                </div>
+                 <input type="text" name="Job_Title" maxlength="100" required="" class="form-control" id="id_Case_Name" placeholder="Введите название">
+              </div>
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1"> Комментарий:</span>
+                </div>
+                    <input type="text" name="Job_Comment" maxlength="300" class="form-control" required="" id="id_Case_Comment" placeholder="Введите комментарий">
+              </div>
+              {%if not request.user|has_group:"Преподаватель"%}
+              <div class ="form">
+                <input  class="form-control" type="number" name="Period" id="Period0" placeholder="Дата" class="amount" min="1900" max="2020" required="">
+                <input type="button" class = "add" title="Добавить ещё один объект типа " value="Добавить"></input >
+              </div>
+              {%endif%}
+              <input class="btn btn-primary" type="submit" name="save" value="Создать из шаблона">
+            </form>
+          <!-- {%endif%} -->
+          <br>
+          <input class="btn btn-primary"  type="submit" name="create" value="Создать новый" OnClick="location.href='cases/createcase'"> 
+          {%if not request.user|has_group:"Преподаватель"%}
+          Для того чтобы начать работу со своим кейсом<br>
+          Нажмите на кнопку "Перейти к созданию нового задания"
+          <a class="btn btn-primary" href="{% url 'cases:CreateCaseWithPattern' %}">Перейти к созданию нового задания</a>
+          {%endif%}
+      </div>     
+    </div>
+    
+  </div>
+</div>
+
+<!-- {%if not request.user|has_group:"Преподаватель" %}
+<div class="container-fluid" id="block" >
+  <div class="row">
+    <div class="row justify-content-md-center">
+    <b style="font-size: 400%">
+      Оценка экономической безопасности компаний
+    </b>
+      
+      <div style=" font-size:80%; justify-content: center;" >
+        <label style="font-size: 18px; justify-content: center;">
+          Для того чтобы начать работу вам нужно нажать кнопку "Обучающий модуль по оценке экономической безопасности компании на примере ПАО ЧТПЗ"<br>
+          После того как преподаватель отметит вашу работу как выполненную, откроется доступ ко второй части "Аналитический модуль по оценке экономической безопасности  компании"<br>
+         
+        </label>
+      </div>
+      <div >
+        {%if My_Jobs|GetCase:'ПАО ЧТПЗ'%}
+          <button  onclick="location.href='{%url 'cases:detail' My_Jobs|GetCase:'ПАО ЧТПЗ'|GetId %}'" style="height: 200px;  width: 49%" class="btn btn-primary btn-lg ">
+            <p style="font-size: 22px" ><label id="pink">Обучающий модуль по оценке экономической безопасности компании на примере ПАО ЧТПЗ</label></p> 
+          </button>
+        {%else%}
+          <a  style="height: 200px;  width: 49%" class="btn btn-secondary btn-lg ">
+            <label id="pink">Обучающий модуль по оценке экономической безопасности компании на примере ПАО ЧТПЗ</label>
+          </a>
+        {%endif%}
+
+        {%if My_Jobs|GetCase:'ПАО ЧТПЗ'|Is_evaluated%}
+          <button style="height: 200px;  width: 49%; font-size: 20px" onclick = "change()" class="btn btn-primary btn-lg">
+            <label id="pink">Аналитический модуль по оценке экономической безопасности компании</label>
+          </button>
+        {%else%}
+          <div title="Аналитическая часть недоступна..." style="height: 200px;  width: 49%; font-size: 20px" class="btn btn-secondary btn-lg">
+            <label id="pink">Аналитический модуль по оценке экономической безопасности компании</label>
+          </div>
+        {%endif%}
+      </div>
+    </div>
+  </div>
+</div>
+{%endif%} -->
+
+
+<script type="text/javascript">
+  
+ var $add = document.getElementsByClassName('add')[0];
+ var $form = document.getElementsByClassName('form')[0];
+ x = 0;
+$add.addEventListener('click', function(event) {
+  date = new Date();
+
+  if(x < 5 ){
+  var $input = document.createElement('input');
+  $input.type = 'number';
+  $input.id = 'Period'+ x +'';
+  $input.name = 'Period';
+  $input.required = '';
+  $input.placeholder = 'Дата';
+  $input.classList.add('amount');
+  $input.min = 1900;
+  $input.classList.add("form-control");
+  $input.max = date.getFullYear();
+  $form.insertBefore($input, $add);
+  x++;
+
+}
+});
+
+  function change(){
+    document.getElementById("block").style.display = 'none';
+    document.getElementById("Analitical").style.display = 'block';
+  }
+
+  function exit(){
+    document.getElementById("block").style.display = 'block';
+    document.getElementById("Analitical").style.display = 'none';
+  }
+
+</script>
+
+<style type="text/css">
+  #pink{
+text-shadow: 0 0 2px #fff, 
+             -1px -1px 0 hsl(0, 0%, 0%),
+             -2px -2px 1px hsl(0, 0%, 0%),
+             -2px -2px 2px hsl(0, 0%, 0%);
+  }
+</style>
+
+{% endblock %}
+
